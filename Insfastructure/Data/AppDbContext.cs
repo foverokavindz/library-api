@@ -19,6 +19,9 @@ namespace library_api.Insfastructure.Data
                 modelBuilder.Entity<Book>()
                     .HasMany(b => b.Genres)
                     .WithMany(g => g.Books);
-            }
+
+                // Example: User-Book many-to-many
+                modelBuilder.Entity<User>().HasMany(u => u.Books).WithMany(b => b.Users);
+        }
         }
     }

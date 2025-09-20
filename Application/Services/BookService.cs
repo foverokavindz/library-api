@@ -93,33 +93,58 @@ namespace library_api.Application.Services
             return books.Select(MapToDto);
         }
 
-        public async Task<IEnumerable<BookDto>> GetByAuthorAsync(Guid authorId)
+        public async Task<IEnumerable<BookDto>> GetAuthorsAsync(Guid bookId)
         {
-            var books = await _bookRepository.GetByAuthorAsync(authorId);
+            var books = await _bookRepository.GetByAuthorAsync(bookId);
             return books.Select(MapToDto);
         }
 
-        public async Task<IEnumerable<BookDto>> GetByGenreAsync(Guid genreId)
+        public async Task<IEnumerable<BookDto>> GetGenresAsync(Guid bookId)
         {
-            var books = await _bookRepository.GetByGenreAsync(genreId);
+            var books = await _bookRepository.GetByGenreAsync(bookId);
             return books.Select(MapToDto);
         }
-        
-        private BookDto MapToDto(Book book)
+
+        public async Task<bool> BorrowAsync(Guid userId, Guid bookId) // in here find out how can i return meannig  full message // also if it false there should be good way to determine it from the  controller side
         {
-            return new BookDto
+            var user = await _userRepository.GetByIdAsync(userId);
+            if (user == null)
             {
-                Id = book.Id,
-                Title = book.Title,
-                Description = book.Description,
-                YearPublished = book.YearPublished,
-                IsAvailable = book.IsAvailable,
-                AvailableCopies = book.AvailableCopies,
-                Language = book.Language,
-                Authors = book.Authors.Select(a => $"{a.FirstName} {a.LastName}"),
-                Genres = book.Genres?.Select(g => g.Name) ?? new List<string>()
-            };
-        }
+                return false;
+            }
+
+            var book = await _bookRepository.GetByIdAsync(bookId);
+            if (book == null)
+            {
+                return false;
+            }
+            if (book.AvailableCopies <= 0)
+            {
+                return false;
+            } else if (book.IsAvailable == false)
+            {
+                return false;
+
+            } else
+            {
+
+            }
+
+                private BookDto MapToDto(Book book)
+                {
+                    return new BookDto
+                    {
+                        Id = book.Id,
+                        Title = book.Title,
+                        Description = book.Description,
+                        YearPublished = book.YearPublished,
+                        IsAvailable = book.IsAvailable,
+                        AvailableCopies = book.AvailableCopies,
+                        Language = book.Language,
+                        Authors = book.Authors.Select(a => $"{a.FirstName} {a.LastName}"),
+                        Genres = book.Genres?.Select(g => g.Name) ?? new List<string>()
+                    };
+                }
 
     }
 }

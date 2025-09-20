@@ -1,4 +1,4 @@
-﻿namespace library_api.Domain.Interfaces
+﻿ namespace library_api.Domain.Interfaces
 {
     public interface IGenericRepository<T> where T : class
     {

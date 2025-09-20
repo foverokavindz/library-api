@@ -65,9 +65,106 @@ namespace library_api.Controllers
         [HttpPost]
         public async Task<IActionResult> Create([FromBody] CreateBookDto dto)
         {
-            var book = await _bookService.CreateBookAsync(dto);
+            var book = await _bookService.CreateAsync(dto);
             return CreatedAtAction(nameof(GetById), new { id = book.Id }, book);
         }
+
+        // update book
+        [HttpPut("{id}")]
+        public async Task<IActionResult> Update(Guid id, [FromBody] UpdateBookDto dto) {
+            var existingBook = await _bookService.GetByIdAsync(id);
+            if (existingBook == null)
+            {
+                return NotFound();
+            }
+            await _bookService.UpdateAsync(id, dto);
+            return NoContent();
+        }
+
+        // Delete books
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> Delete(Guid id) {
+            var existingBook = await _bookService.GetByIdAsync(id);
+            if (existingBook == null)
+            {
+                return NotFound();
+            }
+            await _bookService.DeleteAsync(id);
+            return NoContent();
+        }
+
+        // search books
+        [HttpGet("search/{query}")]
+        public async Task<IActionResult> Search(string query) {
+            var books = await _bookService.SearchAsync(query);
+            var result = books
+                .Select(b => new BookDto
+                {
+                    Id = b!.Id,
+                    Title = b.Title,
+                    Description = b.Description,
+                    YearPublished = b.YearPublished,
+                    IsAvailable = b.IsAvailable,
+                    AvailableCopies = b.AvailableCopies,
+                    Language = b.Language,
+                    Authors = b.Authors?.Select(a => $"{a.FirstName} {a.LastName}") ?? [],
+                    Genres = b.Genres?.Select(g => g.Name) ?? []
+                });
+            return Ok(result);
+        }
+
+        // get available books
+        [HttpGet("available")]
+        public async Task<IActionResult> GetAvailable() {
+            var books = await _bookService.GetAvailableAsync();
+            var result = books
+                .Select(b => new BookDto
+                {
+                    Id = b!.Id,
+                    Title = b.Title,
+                    Description = b.Description,
+                    YearPublished = b.YearPublished,
+                    IsAvailable = b.IsAvailable,
+                    AvailableCopies = b.AvailableCopies,
+                    Language = b.Language,
+                    Authors = b.Authors?.Select(a => $"{a.FirstName} {a.LastName}") ?? [],
+                    Genres = b.Genres?.Select(g => g.Name) ?? []
+                });
+            return Ok(result);
+        }
+
+        // get book authors
+        [HttpGet("{id}/authors")]
+        public async Task<IActionResult> GetAuthors(Guid id) {
+            var authors = await _bookService.GetAuthorsAsync(id);
+            return Ok(authors);
+        }
+
+        // get book genres
+        [HttpGet("{id}/genres")]
+        public async Task<IActionResult> GetGenres(Guid id) {
+            var genres = await _bookService.GetGenresAsync(id);
+            return Ok(genres);
+        }
+
+        [HttpPost("borrow/{userId}/{bookId}")]
+        public async Task<IActionResult> BorrowBook(Guid userId, Guid bookId) {
+
+            if (userId == Guid.Empty || bookId == Guid.Empty)
+            {
+                return BadRequest("Invalid user ID or book ID.");
+            }
+
+            var result = await _bookService.BorrowAsync(userId, bookId);
+
+            if (result)
+            {
+                return Ok("Book borrowed successfully.");
+            }
+
+            return BadRequest("Failed to borrow book.");
+        }
+
 
     }
 }
