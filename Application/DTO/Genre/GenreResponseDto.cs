@@ -1,6 +1,6 @@
 ﻿namespace library_api.Application.DTO.Genre
 {
-    public class GenreDto
+    public class GenreResponseDto
     {
         public Guid Id { get; set; }
         public string Name { get; set; } = string.Empty;

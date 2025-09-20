@@ -22,7 +22,7 @@ namespace library_api.Controllers
             var books = await _bookService.GetAllAsync();
 
             var result = books
-                .Select(b => new BookDto
+                .Select(b => new BookResponseDto
                 {
                     Id = b!.Id,
                     Title = b.Title,
@@ -46,7 +46,7 @@ namespace library_api.Controllers
             {
                 return NotFound();
             }
-            var result = new BookDto
+            var result = new BookResponseDto
             {
                 Id = book.Id,
                 Title = book.Title,
@@ -98,7 +98,7 @@ namespace library_api.Controllers
         public async Task<IActionResult> Search(string query) {
             var books = await _bookService.SearchAsync(query);
             var result = books
-                .Select(b => new BookDto
+                .Select(b => new BookResponseDto
                 {
                     Id = b!.Id,
                     Title = b.Title,
@@ -118,7 +118,7 @@ namespace library_api.Controllers
         public async Task<IActionResult> GetAvailable() {
             var books = await _bookService.GetAvailableAsync();
             var result = books
-                .Select(b => new BookDto
+                .Select(b => new BookResponseDto
                 {
                     Id = b!.Id,
                     Title = b.Title,

@@ -16,13 +16,13 @@ namespace library_api.Application.Services
             _repository = repository;
         }
 
-        public async Task<AuthorDto> GetByIdAsync(Guid id)
+        public async Task<AuthorResponseDto> GetByIdAsync(Guid id)
         {
             var author = await _repository.GetByIdAsync(id);
             return author == null ? null : MapToDto(author);
         }
 
-        public async Task<IEnumerable<AuthorDto>> GetAllAsync()
+        public async Task<IEnumerable<AuthorResponseDto>> GetAllAsync()
         {
             var authors = await _repository.GetAllAsync();
             return authors.Select(a => MapToDto(a));
@@ -38,7 +38,7 @@ namespace library_api.Application.Services
             await _repository.DeleteAsync(author.Id);
         }
 
-        public async Task<AuthorDto> CreateAsync(CreateAuthorDto dto)
+        public async Task<AuthorResponseDto> CreateAsync(CreateAuthorDto dto)
         {
             var author = new Author
             {
@@ -63,21 +63,21 @@ namespace library_api.Application.Services
             await _repository.UpdateAsync(author);
         }
 
-        public async Task<IEnumerable<AuthorDto>> GetByIdsAsync(List<Guid> guids)
+        public async Task<IEnumerable<AuthorResponseDto>> GetByIdsAsync(List<Guid> guids)
         {
             var authors = await _repository.GetByIdsAsync(guids);
             return authors.Select(a => MapToDto(a));
         }
 
-        public async Task<IEnumerable<AuthorDto>> SearchAsync(string query)
+        public async Task<IEnumerable<AuthorResponseDto>> SearchAsync(string query)
         {
             var authors = await _repository.SearchAsync(query);
             return authors.Select(a => MapToDto(a));
         }
 
-        private AuthorDto MapToDto(Author author)
+        private AuthorResponseDto MapToDto(Author author)
         {
-            return new AuthorDto
+            return new AuthorResponseDto
             {
                 Id = author.Id,
                 FirstName = author.FirstName,

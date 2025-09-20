@@ -4,9 +4,9 @@ using library_api.Domain.Interfaces;
 
 namespace library_api.Application.Interfaces
 {
-    public interface IAuthorService : IBaseService<AuthorDto, CreateAuthorDto, UpdateAuthorDto>
+    public interface IAuthorService : IBaseService<AuthorResponseDto, CreateAuthorDto, UpdateAuthorDto>
     {
-        Task<IEnumerable<AuthorDto>> GetByIdsAsync(List<Guid> guids);
-        Task<IEnumerable<AuthorDto>> SearchAsync(string query);
+        Task<IEnumerable<AuthorResponseDto>> GetByIdsAsync(List<Guid> guids);
+        Task<IEnumerable<AuthorResponseDto>> SearchAsync(string query);
     }
 }

@@ -3,12 +3,12 @@ using library_api.Domain.Entities;
 
 namespace library_api.Application.Interfaces
 {
-    public interface IBookService : IBaseService<BookDto, CreateBookDto, UpdateBookDto>
+    public interface IBookService : IBaseService<BookResponseDto, CreateBookDto, UpdateBookDto>
     {
-        Task<IEnumerable<BookDto>> GetAvailableAsync();
-        Task<IEnumerable<BookDto>> GetByAuthorAsync(Guid authorId);
-        Task<IEnumerable<BookDto>> GetByGenreAsync(Guid genreId);
-        Task<IEnumerable<BookDto>> SearchAsync(string query);
+        Task<IEnumerable<BookResponseDto>> GetAvailableAsync();
+        Task<IEnumerable<BookResponseDto>> GetByAuthorAsync(Guid authorId);
+        Task<IEnumerable<BookResponseDto>> GetByGenreAsync(Guid genreId);
+        Task<IEnumerable<BookResponseDto>> SearchAsync(string query);
     }
 
 }

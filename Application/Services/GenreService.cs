@@ -16,19 +16,19 @@ namespace library_api.Application.Services
             _repository = repository;
         }
 
-        public async Task<GenreDto> GetByIdAsync(Guid id)
+        public async Task<GenreResponseDto> GetByIdAsync(Guid id)
         {
             var genre = await _repository.GetByIdAsync(id);
             return genre == null ? null : MaptoDto(genre);
         }
 
-        public async Task<IEnumerable<GenreDto>> GetAllAsync()
+        public async Task<IEnumerable<GenreResponseDto>> GetAllAsync()
         {
             var genres = await _repository.GetAllAsync();
             return genres.Select(g => MaptoDto(g));
         }
 
-        public async Task<GenreDto> CreateAsync(CreateGenreDto dto)
+        public async Task<GenreResponseDto> CreateAsync(CreateGenreDto dto)
         {
             var genre = new Genre
             {
@@ -60,15 +60,15 @@ namespace library_api.Application.Services
             await _repository.DeleteAsync(genre.Id);
         }
 
-        public async Task<IEnumerable<GenreDto>> GetByIdsAsync(List<Guid> guids)
+        public async Task<IEnumerable<GenreResponseDto>> GetByIdsAsync(List<Guid> guids)
         {
             var genres = await _repository.GetByIdsAsync(guids) ?? [];
             return genres.Select(g => MaptoDto(g));
         }
 
-        private GenreDto MaptoDto(Genre genre)
+        private GenreResponseDto MaptoDto(Genre genre)
         {
-            return new GenreDto
+            return new GenreResponseDto
             {
                 Id = genre.Id,
                 Name = genre.Name

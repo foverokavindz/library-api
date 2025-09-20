@@ -7,8 +7,11 @@
         public int YearPublished { get; set; }
         public string? ISBN { get; set; }
         public string? Language { get; set; }
-
+        public bool? IsAvailable { get; set; }
+        public int? AvailableCopies { get; set; }
+        public bool? IsBorrowed { get; set; }
         public List<Guid> AuthorIds { get; set; } = new();
         public List<Guid> GenreIds { get; set; } = new();
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using library_api.Domain.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
+// this is the implementation for the repository with the database context
 namespace library_api.Insfastructure.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class

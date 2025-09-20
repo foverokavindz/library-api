@@ -18,7 +18,7 @@ namespace library_api.Application.Services
             _genreRepository = genreRepository;
         }
 
-        public async Task<BookDto> CreateAsync(CreateBookDto dto)
+        public async Task<BookResponseDto> CreateAsync(CreateBookDto dto)
         {
             // Map Authors and Genres
             var authors = await _authorRepository.GetByIdsAsync(dto.AuthorIds) ?? [];
@@ -44,14 +44,14 @@ namespace library_api.Application.Services
             return MapToDto(book);
         }
 
-        public async Task<IEnumerable<BookDto>> GetAllAsync()
+        public async Task<IEnumerable<BookResponseDto>> GetAllAsync()
         {
             var books = await _bookRepository.GetAllAsync();
 
             return books.Select(b => MapToDto(b));
         }
 
-        public async Task<BookDto?> GetByIdAsync(Guid id) { 
+        public async Task<BookResponseDto?> GetByIdAsync(Guid id) { 
             var book = await _bookRepository.GetByIdAsync(id);
             return book == null ? null : MapToDto(book);
         }
@@ -81,25 +81,25 @@ namespace library_api.Application.Services
             await _bookRepository.DeleteAsync(id);
         }
 
-        public async Task<IEnumerable<BookDto>> SearchAsync(string query)
+        public async Task<IEnumerable<BookResponseDto>> SearchAsync(string query)
         {
             var books = await _bookRepository.SearchAsync(query);
             return books.Select(MapToDto);
         }
 
-        public async Task<IEnumerable<BookDto>> GetAvailableAsync()
+        public async Task<IEnumerable<BookResponseDto>> GetAvailableAsync()
         {
             var books = await _bookRepository.GetAvailableAsync();
             return books.Select(MapToDto);
         }
 
-        public async Task<IEnumerable<BookDto>> GetAuthorsAsync(Guid bookId)
+        public async Task<IEnumerable<BookResponseDto>> GetAuthorsAsync(Guid bookId)
         {
             var books = await _bookRepository.GetByAuthorAsync(bookId);
             return books.Select(MapToDto);
         }
 
-        public async Task<IEnumerable<BookDto>> GetGenresAsync(Guid bookId)
+        public async Task<IEnumerable<BookResponseDto>> GetGenresAsync(Guid bookId)
         {
             var books = await _bookRepository.GetByGenreAsync(bookId);
             return books.Select(MapToDto);
@@ -130,9 +130,9 @@ namespace library_api.Application.Services
 
             }
 
-                private BookDto MapToDto(Book book)
+                private BookResponseDto MapToDto(Book book)
                 {
-                    return new BookDto
+                    return new BookResponseDto
                     {
                         Id = book.Id,
                         Title = book.Title,
