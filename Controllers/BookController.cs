@@ -1,4 +1,6 @@
-﻿using library_api.Application.DTO.Book;
+﻿using library_api.Application.DTO.Author;
+using library_api.Application.DTO.Book;
+using library_api.Application.DTO.Genre;
 using library_api.Application.Interfaces;
 using library_api.Domain.Entities;
 using library_api.Domain.Interfaces;
@@ -31,8 +33,17 @@ namespace library_api.Controllers
                     IsAvailable = b.IsAvailable,
                     AvailableCopies = b.AvailableCopies,
                     Language = b.Language,
-                    Authors = b.Authors?.Select(a => $"{a.FirstName} {a.LastName}") ?? [],
-                    Genres = b.Genres?.Select(g => g.Name) ?? []
+                    Authors = b.Authors?.Select(a => new AuthorResponseDto
+                    {
+                        Id = a.Id,
+                        FirstName = a.FirstName,
+                        LastName = a.LastName
+                    }).ToList() ?? new List<AuthorResponseDto>(),
+                    Genres = b.Genres?.Select(g => new GenreResponseDto
+                    {
+                        Id = g.Id,
+                        Name = g.Name
+                    }).ToList() ?? new List<GenreResponseDto>()
                 });
 
             return Ok(result);
