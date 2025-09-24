@@ -1,5 +1,6 @@
 using library_api.Application.Interfaces;
 using library_api.Application.Services;
+using library_api.Application.Extensions;
 using library_api.Domain.Interfaces;
 using library_api.Insfastructure.Data;
 using library_api.Insfastructure.Repositories;
@@ -22,15 +23,38 @@ builder.Services.AddScoped<IGenreRepository, GenreRepository>();
 // Register services
 builder.Services.AddScoped<IBookService, BookService>();
 
-
 builder.Services.AddControllers();
+
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    options.SwaggerDoc("v1", new Microsoft.OpenApi.Models.OpenApiInfo
+    {
+        Version = "v1",
+        Title = "Library API",
+        Description = "A comprehensive library management API with proper exception handling"
+    });
+});
+
+// Add CORS policy
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
 
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
+
+// Add exception handling middleware (should be first)
+app.UseGlobalExceptionHandling();
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -38,6 +62,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("AllowAll");
 
 app.UseAuthorization();
 
