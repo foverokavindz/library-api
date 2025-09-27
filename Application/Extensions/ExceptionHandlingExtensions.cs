@@ -14,7 +14,7 @@ namespace library_api.Application.Extensions
         /// <returns>The application builder</returns>
         public static IApplicationBuilder UseGlobalExceptionHandling(this IApplicationBuilder app)
         {
-            return app.UseMiddleware<ExceptionHandlingMiddleware>();
+            return app.UseMiddleware<GlobalExceptionMiddleware>();
         }
     }
 }

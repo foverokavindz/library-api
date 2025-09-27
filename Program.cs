@@ -6,6 +6,7 @@ using library_api.Insfastructure.Data;
 using library_api.Insfastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using library_api.Application.Middleware;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -52,14 +53,14 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 
-// Add exception handling middleware (should be first)
-app.UseGlobalExceptionHandling();
-
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
     app.UseSwaggerUI();
 }
+
+// global exception middleware early in pipeline
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 app.UseHttpsRedirection();
 

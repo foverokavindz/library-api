@@ -1,54 +1,58 @@
+using library_api.Domain.Exceptions;
+
 namespace library_api.Application.Models
 {
-    /// <summary>
-    /// Standardized API response wrapper
-    /// </summary>
-    /// <typeparam name="T">Type of data being returned</typeparam>
     public class ApiResponse<T>
     {
-        /// <summary>
-        /// Indicates if the request was successful
-        /// </summary>
         public bool Success { get; set; }
-
-        /// <summary>
-        /// Response data (if successful)
-        /// </summary>
         public T? Data { get; set; }
-
-        /// <summary>
-        /// Error information (if unsuccessful)
-        /// </summary>
-        public ErrorResponse? Error { get; set; }
-
-        /// <summary>
-        /// Additional metadata
-        /// </summary>
+        public ApiError? Error { get; set; }
+        public DateTime Timestamp { get; set; } = DateTime.UtcNow;
+        public string RequestId { get; set; } = Guid.NewGuid().ToString();
         public Dictionary<string, object>? Metadata { get; set; }
 
-        /// <summary>
-        /// Create a successful response
-        /// </summary>
-        public static ApiResponse<T> SuccessResult(T data, Dictionary<string, object>? metadata = null)
+        // Success factory methods
+        public static ApiResponse<T> SuccessResponse(T data, Dictionary<string, object>? metadata = null) => new()
         {
-            return new ApiResponse<T>
-            {
-                Success = true,
-                Data = data,
-                Metadata = metadata
-            };
-        }
+            Success = true,
+            Data = data,
+            Metadata = metadata
+        };
 
-        /// <summary>
-        /// Create an error response
-        /// </summary>
-        public static ApiResponse<T> ErrorResult(ErrorResponse error)
+        public static ApiResponse<object> SuccessResponse() => new()
         {
-            return new ApiResponse<T>
+            Success = true,
+            Data = new { }
+        };
+
+        // Error factory methods
+        public static ApiResponse<T> ErrorResponse(string message, string code, int statusCode = 400, List<ValidationError>? validationErrors = null, Dictionary<string, object>? details = null) => new()
+        {
+            Success = false,
+            Error = new ApiError
             {
-                Success = false,
-                Error = error
-            };
-        }
+                Message = message,
+                Code = code,
+                StatusCode = statusCode,
+                ValidationErrors = validationErrors,
+                Details = details
+            }
+        };
+
+        public static ApiResponse<T> ErrorResponse(DomainException ex) => new()
+        {
+            Success = false,
+            Error = new ApiError
+            {
+                Message = ex.Message,
+                Code = ex.ErrorCode,
+                StatusCode = ex.StatusCode,
+                Details = ex.Details
+            }
+        };
     }
+
+
+
+
 }
