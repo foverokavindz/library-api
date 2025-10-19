@@ -1,5 +1,6 @@
-using library_api.Application.Exceptions;
+using System.ComponentModel.DataAnnotations;
 using library_api.Application.Models;
+using library_api.Domain.Exceptions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace library_api.Controllers
@@ -17,7 +18,7 @@ namespace library_api.Controllers
         [HttpGet("not-found")]
         public ActionResult<ApiResponse<object>> TestNotFoundException()
         {
-            throw new NotFoundException("TestResource", "test-id");
+            throw new NotFoundException(new Guid());
         }
 
         /// <summary>
@@ -31,34 +32,7 @@ namespace library_api.Controllers
                 {"Name", new[] {"Name is required"}},
                 {"Email", new[] {"Email is invalid", "Email is already taken"}}
             };
-            throw new ValidationException(errors);
-        }
-
-        /// <summary>
-        /// Test BusinessRuleViolationException
-        /// </summary>
-        [HttpGet("business-rule")]
-        public ActionResult<ApiResponse<object>> TestBusinessRuleException()
-        {
-            throw new BusinessRuleViolationException("Cannot perform this operation during business hours");
-        }
-
-        /// <summary>
-        /// Test ConflictException
-        /// </summary>
-        [HttpGet("conflict")]
-        public ActionResult<ApiResponse<object>> TestConflictException()
-        {
-            throw new ConflictException("Resource already exists with the same identifier");
-        }
-
-        /// <summary>
-        /// Test ForbiddenException
-        /// </summary>
-        [HttpGet("forbidden")]
-        public ActionResult<ApiResponse<object>> TestForbiddenException()
-        {
-            throw new ForbiddenException("You don't have permission to access this resource");
+            throw new ValidationException(errors.ToString());
         }
 
         /// <summary>

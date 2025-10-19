@@ -53,7 +53,7 @@ namespace library_api.Application.Middleware
 
         private ApiResponse<object> HandleDomainException(DomainException ex)
         {
-            return ApiResponse<object>.ErrorResponse(ex);
+            return ApiResponse<object>.ErrorResponse(ex); // This will handle all the exceptions which inherited from DomainException
         }
 
         private ApiResponse<object> HandleUnauthorizedException()

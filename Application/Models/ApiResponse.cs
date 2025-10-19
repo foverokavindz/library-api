@@ -7,6 +7,7 @@ namespace library_api.Application.Models
         public bool Success { get; set; }
         public T? Data { get; set; }
         public ApiError? Error { get; set; }
+        public ValidationError? ValidationErrors { get; set; }
         public DateTime Timestamp { get; set; } = DateTime.UtcNow;
         public string RequestId { get; set; } = Guid.NewGuid().ToString();
         public Dictionary<string, object>? Metadata { get; set; }
