@@ -2,9 +2,11 @@
 using library_api.Application.DTO.Author;
 using library_api.Application.DTO.Genre;
 using library_api.Application.Interfaces;
-using library_api.Application.Exceptions;
+using library_api.Domain.Exceptions;
 using library_api.Domain.Entities;
 using library_api.Domain.Interfaces;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.EntityFrameworkCore;
 
 namespace library_api.Application.Services
 {
@@ -32,8 +34,11 @@ namespace library_api.Application.Services
             // Check if book with same ISBN already exists
             if (!string.IsNullOrEmpty(dto.ISBN))
             {
-                var existingBooks = await _bookRepository.GetAllAsync();
-                if (existingBooks?.Any(b => b?.ISBN == dto.ISBN) == true)
+                var exists = await _bookRepository
+                    .AsQueryable() // use AsQueryable to build the query efficiently
+                    .AnyAsync(b => b.ISBN == dto.ISBN);
+
+                if (exists)
                     throw new ConflictException($"A book with ISBN '{dto.ISBN}' already exists.");
             }
 
@@ -68,7 +73,9 @@ namespace library_api.Application.Services
             }
             catch (Exception ex)
             {
-                throw new BusinessRuleViolationException($"Failed to create book: {ex.Message}");
+                // Wrap any unexpected database or system exceptions into a domain-level error 
+                // to keep business logic isolated and prevent leaking internal details.
+                throw new InvalidOperationException($"Failed to create book: {ex.Message}", ex);
             }
         }
 
@@ -81,7 +88,7 @@ namespace library_api.Application.Services
             }
             catch (Exception ex)
             {
-                throw new BusinessRuleViolationException($"Failed to retrieve books: {ex.Message}");
+                throw new InvalidOperationException($"Failed to retrieve books: {ex.Message}", ex);
             }
         }
 
@@ -94,17 +101,17 @@ namespace library_api.Application.Services
             {
                 var book = await _bookRepository.GetByIdAsync(id);
                 if (book == null)
-                    throw new NotFoundException("Book", id);
+                    throw new BookNotFoundException(id);
 
                 return MapToDto(book);
             }
-            catch (NotFoundException)
+            catch (BookNotFoundException)
             {
                 throw;
             }
             catch (Exception ex)
             {
-                throw new BusinessRuleViolationException($"Failed to retrieve book: {ex.Message}");
+                throw new InvalidOperationException($"Failed to retrieve book: {ex.Message}", ex);
             }
         }
 
@@ -121,7 +128,7 @@ namespace library_api.Application.Services
 
             var book = await _bookRepository.GetByIdAsync(id);
             if (book == null)
-                throw new NotFoundException("Book", id);
+                    throw new BookNotFoundException(id);
 
             // Check if ISBN is being changed to one that already exists
             if (!string.IsNullOrEmpty(dto.ISBN) && book.ISBN != dto.ISBN)
@@ -153,7 +160,7 @@ namespace library_api.Application.Services
             }
             catch (Exception ex)
             {
-                throw new BusinessRuleViolationException($"Failed to update book: {ex.Message}");
+                throw new InvalidOperationException($"Failed to update book: {ex.Message}", ex);
             }
         }
 
@@ -164,7 +171,7 @@ namespace library_api.Application.Services
 
             var book = await _bookRepository.GetByIdAsync(id);
             if (book == null)
-                throw new NotFoundException("Book", id);
+                    throw new BookNotFoundException(id);
 
             try
             {
@@ -172,7 +179,7 @@ namespace library_api.Application.Services
             }
             catch (Exception ex)
             {
-                throw new BusinessRuleViolationException($"Failed to delete book: {ex.Message}");
+                throw new InvalidOperationException($"Failed to delete book: {ex.Message}", ex);
             }
         }
 
@@ -188,7 +195,7 @@ namespace library_api.Application.Services
             }
             catch (Exception ex)
             {
-                throw new BusinessRuleViolationException($"Failed to search books: {ex.Message}");
+                throw new InvalidOperationException($"Failed to search books: {ex.Message}", ex);
             }
         }
 
@@ -201,7 +208,7 @@ namespace library_api.Application.Services
             }
             catch (Exception ex)
             {
-                throw new BusinessRuleViolationException($"Failed to retrieve available books: {ex.Message}");
+                throw new InvalidOperationException($"Failed to retrieve available books: {ex.Message}", ex);
             }
         }
 
@@ -217,7 +224,7 @@ namespace library_api.Application.Services
             }
             catch (Exception ex)
             {
-                throw new BusinessRuleViolationException($"Failed to retrieve books by author: {ex.Message}");
+                throw new InvalidOperationException($"Failed to retrieve books by author: {ex.Message}", ex);
             }
         }
 
@@ -233,7 +240,7 @@ namespace library_api.Application.Services
             }
             catch (Exception ex)
             {
-                throw new BusinessRuleViolationException($"Failed to retrieve books by genre: {ex.Message}");
+                throw new InvalidOperationException($"Failed to retrieve books by genre: {ex.Message}", ex);
             }
         }
 

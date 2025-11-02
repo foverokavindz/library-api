@@ -1,12 +1,13 @@
 ﻿using library_api.Domain.Entities;
 using library_api.Domain.Interfaces;
+using library_api.Insfastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace library_api.Insfastructure.Repositories
 {
     public class AuthorRepository : GenericRepository<Author>, IAuthorRepository
     {
-        public AuthorRepository(DbContext dbContext) : base(dbContext) { }
+        public AuthorRepository(AppDbContext dbContext) : base(dbContext) { }
 
         public async Task<IEnumerable<Author>> SearchAsync(string query)
         {

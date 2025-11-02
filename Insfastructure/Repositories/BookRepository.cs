@@ -1,12 +1,13 @@
 ﻿using library_api.Domain.Entities;
 using library_api.Domain.Interfaces;
+using library_api.Insfastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace library_api.Insfastructure.Repositories
 {
     public class BookRepository : GenericRepository<Book>, IBookRepository
     {
-        public BookRepository(DbContext dbContext) : base(dbContext) { }
+        public BookRepository(AppDbContext dbContext) : base(dbContext) { }
 
         public async Task<IEnumerable<Book>> GetByAuthorAsync(Guid authorId)
         {

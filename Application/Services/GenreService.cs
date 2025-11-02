@@ -16,7 +16,7 @@ namespace library_api.Application.Services
             _repository = repository;
         }
 
-        public async Task<GenreResponseDto> GetByIdAsync(Guid id)
+        public async Task<GenreResponseDto?> GetByIdAsync(Guid id)
         {
             var genre = await _repository.GetByIdAsync(id);
             return genre == null ? null : MaptoDto(genre);
@@ -25,7 +25,7 @@ namespace library_api.Application.Services
         public async Task<IEnumerable<GenreResponseDto>> GetAllAsync()
         {
             var genres = await _repository.GetAllAsync();
-            return genres.Select(g => MaptoDto(g));
+            return genres.Where(g => g != null).Select(g => MaptoDto(g!)); // learn this
         }
 
         public async Task<GenreResponseDto> CreateAsync(CreateGenreDto dto)

@@ -16,10 +16,10 @@ namespace library_api.Application.Services
             _repository = repository;
         }
 
-        public async Task<AuthorResponseDto> GetByIdAsync(Guid id)
+        public async Task<AuthorResponseDto?> GetByIdAsync(Guid id)
         {
             var author = await _repository.GetByIdAsync(id);
-            return author == null ? null : MapToDto(author);
+            return author != null ? MapToDto(author) : null; // learn this
         }
 
         public async Task<IEnumerable<AuthorResponseDto>> GetAllAsync()

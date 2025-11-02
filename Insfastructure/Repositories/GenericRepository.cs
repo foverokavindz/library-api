@@ -1,4 +1,5 @@
 ﻿using library_api.Domain.Interfaces;
+using library_api.Insfastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 // this is the implementation for the repository with the database context
@@ -6,10 +7,10 @@ namespace library_api.Insfastructure.Repositories
 {
     public class GenericRepository<T> : IGenericRepository<T> where T : class
     {
-        protected readonly DbContext _context;
+        protected readonly AppDbContext _context;
         protected readonly DbSet<T> _dbSet;
 
-        public GenericRepository(DbContext context)
+        public GenericRepository(AppDbContext context)
         {
             _context = context;
             _dbSet = context.Set<T>();
@@ -47,5 +48,7 @@ namespace library_api.Insfastructure.Repositories
             }
         }
 
+        public IQueryable<T> AsQueryable() => _dbSet.AsQueryable();
+        
     }
 }

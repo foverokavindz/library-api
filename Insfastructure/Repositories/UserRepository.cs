@@ -1,5 +1,6 @@
 ﻿using library_api.Domain.Entities;
 using library_api.Domain.Interfaces;
+using library_api.Insfastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 // this is the user repository, which has all the DB related implmentation for User entity
@@ -9,6 +10,6 @@ namespace library_api.Insfastructure.Repositories
 {
     public class UserRepository : GenericRepository<User>, IUserRepository
     {
-        public UserRepository(DbContext dbContext) : base(dbContext) { }
+        public UserRepository(AppDbContext dbContext) : base(dbContext) { }
     }
 }

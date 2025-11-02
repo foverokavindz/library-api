@@ -4,6 +4,7 @@ using library_api.Domain.Entities;
 using library_api.Domain.Interfaces;
 using library_api.Insfastructure.Repositories;
 using BCrypt.Net;
+using Microsoft.EntityFrameworkCore;
 
 namespace library_api.Application.Services
 {
@@ -18,10 +19,12 @@ namespace library_api.Application.Services
 
         public async Task<UserResponseDto> CreateAsync(CreateUserDto dto) {
 
-
             // Check if user with email already exists
-            var existingUsers = await _userRepository.GetAllAsync();
-            if (existingUsers.Any(u => u != null && u.Email == dto.Email))
+            var exists = await _userRepository
+                .AsQueryable() // use AsQueryable to build the query efficiently
+                .AnyAsync(u => u.Email == dto.Email);
+
+            if (exists)
             {
                 throw new InvalidOperationException("User with this email already exists.");
             }
@@ -44,11 +47,14 @@ namespace library_api.Application.Services
             return MapToResponseDto(user);
         }
 
-        public async Task<IEnumerable<UserResponseDto>> GetAllAsync() // stydy about linQs
+        public async Task<IEnumerable<UserResponseDto>> GetAllAsync() // study about linQs
         {
-            var users = await _userRepository.GetAllAsync();
-            return users
+            var users = await _userRepository
+                .AsQueryable()
                 .Where(u => u != null && !u.IsDeleted)
+                .ToListAsync();
+
+            return users
                 .Select(u => MapToResponseDto(u!));
         }
 

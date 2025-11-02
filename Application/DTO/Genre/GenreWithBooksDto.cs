@@ -1,4 +1,6 @@
-﻿namespace library_api.Application.DTO.Genre
+﻿using library_api.Application.DTO.Book;
+
+namespace library_api.Application.DTO.Genre
 {
     public class GenreWithBooksDto
     {

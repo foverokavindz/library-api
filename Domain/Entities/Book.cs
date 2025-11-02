@@ -13,6 +13,6 @@
         public string? Language { get; set; }
         public required ICollection<Author> Authors { get; set; } = new List<Author>();
         public required ICollection<Genre> Genres { get; set; } = new List<Genre>();
-        public ICollection<User>? Users { get; set; } = new List<User>(); // TODO : Create Db relation in Db context
+        public ICollection<User>? Users { get; set; } = new List<User>();
     }
 }

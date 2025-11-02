@@ -17,7 +17,20 @@ namespace library_api.Application.Services
 
         public Task<BorrowBookResponseDto> BorrowBookAsync(BorrowBookRequestDto dto)
         {
-            
+            // validate the request
+
+            // check whether book in available
+
+            // check whether user is eligible to borrow
+
+            // Check user borrowing limit
+
+            // create borrow record
+
+            // update book status to borrowed
+
+            // return response dto
+            throw new NotImplementedException();
         }
     }
 }
