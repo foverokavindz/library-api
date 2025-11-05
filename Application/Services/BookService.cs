@@ -42,6 +42,42 @@ namespace library_api.Application.Services
                     throw new ConflictException($"A book with ISBN '{dto.ISBN}' already exists.");
             }
 
+            // Check author and genre is null
+
+            if (dto.AuthorIds.Count != 0)
+            {
+                var authorIds = (dto.Authors ?? Enumerable.Empty<CreateAuthorDto>()).Where(a => a.Id.HasValue).Select(a => a.Id!.Value).ToList(); 
+                if (authorIds.Count != 0)
+                {
+                    var existingAuthors = await _authorRepository.GetByIdsAsync(authorIds);
+                    if (existingAuthors.Count() != authorIds.Count)
+                        throw new ValidationException("One or more specified authors do not exist.");
+                }
+
+                var newAuthors = (dto.Authors ?? Enumerable.Empty<CreateAuthorDto>()).Where(a => a.Id == null && (string.IsNullOrWhiteSpace(a.FirstName) || string.IsNullOrWhiteSpace(a.LastName))).ToList();
+                if (newAuthors.Count != 0)
+                {
+                    foreach (var newAuthorDto in newAuthors)
+                    {
+                        var newAuthor = new Author
+                        {
+                            Id = Guid.NewGuid(),
+                            FirstName = newAuthorDto.FirstName,
+                            LastName = newAuthorDto.LastName,
+                            Bio = newAuthorDto.Bio
+                        };
+                        await _authorRepository.AddAsync(newAuthor);
+                    }
+                }
+            }
+
+
+            var genreIds = dto.Genres?.Select(g => g?.Id).ToList() ?? null;
+
+            // if exists
+
+            // save new 
+
             // Map Authors and Genres
             var authors = await _authorRepository.GetByIdsAsync(dto.AuthorIds)!;
             if (authors == null || !authors.Any())

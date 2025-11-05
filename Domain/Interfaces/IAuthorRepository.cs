@@ -4,7 +4,7 @@ namespace library_api.Domain.Interfaces
 {
     public interface IAuthorRepository : IGenericRepository<Author>
     {
-        Task<IEnumerable<Author>>? SearchAsync(string query);
-        Task<IEnumerable<Author>>? GetByIdsAsync(List<Guid> guids);
+        Task<IEnumerable<Author>> SearchAsync(string query);
+        Task<IEnumerable<Author>> GetByIdsAsync(List<Guid> guids);
     }
 }

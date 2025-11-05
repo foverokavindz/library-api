@@ -16,7 +16,7 @@ namespace library_api.Insfastructure.Repositories
                 .ToListAsync();
         }
 
-        public async Task<IEnumerable<Author>>? GetByIdsAsync(List<Guid> guids)
+        public async Task<IEnumerable<Author>> GetByIdsAsync(List<Guid> guids)
         {
             var results = new List<Author>();
 
